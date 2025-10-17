@@ -1,0 +1,109 @@
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement()) // auto-incrementing primary key
+  email     String   @unique
+  password  String?
+  name      String?
+  picture   String?
+  role      String   @default("user") // default role is 'user'
+  enabled   Boolean  @default(true) // user is enabled by default
+  address   String?
+  orders     Order[] // relation to Order
+  carts     Cart[] // relation to Cart
+  createdAt DateTime @default(now()) // timestamp for when the user was created
+  updatedAt DateTime @updatedAt // timestamp for when the user was last updated
+}
+
+model Product {
+  id          Int              @id @default(autoincrement()) // auto-incrementing primary key
+  title       String // product title
+  description String // product description
+  orderItems  ProductOnOrder[] // relation to ProductOnOrder
+  price       Float // product price 
+  quantity    Int // available quantity of the product
+  sold        Int              @default(0) // number of products sold, default is 0
+  images      Image[] // optional relation to Image
+  cartItems   ProductOncart[] // relation to ProductOncart
+  createdAt   DateTime         @default(now()) // timestamp for when the product was created
+  updatedAt   DateTime         @updatedAt // timestamp for when the product was last updated
+  category    Category?        @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+}
+
+model Order {
+  id          Int              @id @default(autoincrement()) // auto-incrementing primary key
+  products    ProductOnOrder[] // relation to ProductOnOrder
+  cartTotal   Float
+  orderedBy   User             @relation(fields: [orderedById], references: [id], onDelete: Cascade)
+  orderedById Int // foreign key to User
+  status      String           @default("pending") // order status, default is 'pending'
+  createdAt   DateTime         @default(now()) // timestamp for when the order was created
+  updatedAt   DateTime         @updatedAt // timestamp for when the order was last updated
+}
+
+model ProductOnOrder {
+  id        Int     @id @default(autoincrement()) // auto-incrementing primary key
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int // foreign key to Product
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   Int // foreign key to Order
+  quantity  Int // quantity of the product in the order
+  count     Int // count of the product in the order
+  price     Float // price of the product at the time of the order
+}
+
+model Category {
+  id        Int       @id @default(autoincrement()) // auto-incrementing primary key
+  name      String
+  products  Product[] // relation to Product
+  createdAt DateTime  @default(now()) // timestamp for when the category was created
+  updatedAt DateTime  @updatedAt // timestamp for when the category was last updated
+}
+
+model Cart {
+  id          Int             @id @default(autoincrement()) // auto-incrementing primary key
+  cartTotal   Float  @default(0)  // total price of the items in the cart
+  products    ProductOncart[] // relation to ProductOncart
+  orderBy     User            @relation(fields: [orderedById], references: [id], onDelete: Cascade)
+  orderedById Int // foreign key to User
+  createdAt   DateTime        @default(now()) // timestamp for when the cart was created
+  updatedAt   DateTime        @updatedAt // timestamp for when the cart was last updated
+}
+
+model ProductOncart {
+  id        Int     @id @default(autoincrement()) // auto-incrementing primary key
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId    Int // foreign key to Cart
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade) // อจ ลบ ondelente  ออก
+  productId Int
+  count     Int // quantity of the product in the cart
+  price     Float // price of the product at the time it was added to the cart
+}
+
+model Image {
+  id        Int      @id @default(autoincrement()) // auto-incrementing primary key
+  assetId   String? // unique identifier for the image asset
+  publicId  String? // public identifier for the image
+  url       String // URL of the image
+  secureUrl String? // secure URL of the image
+  productId Int // optional foreign key to Product
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade) // relation to Product, optional
+  createdAt DateTime @default(now()) // timestamp for when the image was created
+  updatedAt DateTime @updatedAt // timestamp for when the image was last updated
+}
+
