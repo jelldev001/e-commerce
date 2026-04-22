@@ -1,8 +1,11 @@
 import React from 'react'
+import ListCart from '../components/card/ListCart'
 // rafce or rfce 
 const Cart = () => {
   return (
-    <div>Cart</div>
+    <div>
+      <ListCart />
+    </div>
   )
 }
 

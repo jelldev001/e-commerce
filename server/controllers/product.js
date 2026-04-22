@@ -1,10 +1,16 @@
 
 const prisma = require('../config/prisma');
 const cloudinary = require('cloudinary').v2 //เป็นการเข้าถืงobject
+// Configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 const createProduct = async (req, res) => {
     try {
         const { title, description, price, images, quantity, categoryId } = req.body;
-        console.log(title, description, price, images, quantity, categoryId);
+        // console.log(title, description, price, images, quantity, categoryId); 
         const product = await prisma.product.create(
             {
                 data: {
@@ -15,10 +21,10 @@ const createProduct = async (req, res) => {
                     categoryId: parseInt(categoryId), // หมวดหมู่สินค้า
                     images: {
                         create: images.map((item) => ({
-                            assetId: item.assetId,
-                            publicId: item.publicId,
+                            assetId: item.asset_id,
+                            publicId: item.public_id,
                             url: item.url,
-                            secureUrl: item.secureUrl,
+                            secureUrl: item.secure_url,
                         }))
 
                     }
@@ -71,16 +77,20 @@ const readProduct = async (req, res) => {
     }
 }
 const updateProduct = async (req, res) => {
+
     try {
         const { title, description, price, images, quantity, categoryId } = req.body;
-        // console.log(title, description, price, images, quantity, categoryId);
-
         const { id } = req.params;
+        const imageArray = Array.isArray(images) ? images : []
+        // console.log(title, description, price, images, quantity, categoryId);
+        console.log("Product id ", id)
+        console.log("body =>>>", req.body)
+        // ลบรูปภาพเก่า
         await prisma.image.deleteMany({
             where: {
                 productId: Number(id)
             }
-        }); // ลบรูปภาพเก่า
+        });
         const product = await prisma.product.update(
             {
                 where: {
@@ -93,13 +103,12 @@ const updateProduct = async (req, res) => {
                     quantity: parseInt(quantity), // จำนวนสินค้า
                     categoryId: parseInt(categoryId), // หมวดหมู่สินค้า
                     images: {
-                        create: images.map((item) => ({
-                            assetId: item.assetId,
-                            publicId: item.publicId,
+                        create: imageArray.map((item) => ({
+                            assetId: item.asset_id,
+                            publicId: item.public_id,
                             url: item.url,
-                            secureUrl: item.secureUrl,
+                            secureUrl: item.secure_url,
                         }))
-
                     }
                 }
             }
@@ -114,6 +123,33 @@ const removeProduct = async (req, res) => {
 
     try {
         const { id } = req.params;
+        // step 1 หาสี้นค้า
+        const product = await prisma.product.findFirst(
+            {
+                where: { id: Number(id) },
+                include: { images: true }
+            }
+        )
+        if (!product) {
+            return res.status(400).json({ message: 'product not found!' })
+        }
+        console.log(product)
+        //step 2 ลบภาพใน cloudinary
+        // กรองเฉพาะ images ที่มี publicId
+        const imagesWithPublicId = product.images.filter(image => image.publicId && image.publicId.trim() !== '')
+
+        if (imagesWithPublicId.length > 0) {
+            const deleteImage = imagesWithPublicId.map((image) =>
+                new Promise((resolve, reject) => {
+                    cloudinary.uploader.destroy(image.publicId, (error, result) => {
+                        if (error) reject(error)
+                        else resolve(result)
+                    })
+                })
+            )
+            await Promise.all(deleteImage)
+        }
+        //step 3 ลบสิ้นค้า
         await prisma.product.delete({
             where: {
                 id: Number(id),
@@ -231,12 +267,7 @@ const listbyProduct = async (req, res) => {
         res.status(500).json({ message: 'server error' });
     }
 }
-// Configuration
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+
 const creatImages = async (req, res) => {
     try {
         // เพิ่ม validation
@@ -247,7 +278,7 @@ const creatImages = async (req, res) => {
         }
 
         const uploadResult = await cloudinary.uploader.upload(req.body.image, {
-            public_id: `isMe${Date.now()}`,
+            publicId: `isMe${Date.now()}`,
             resource_type: 'auto',
             folder: 'ecom24-9-25'
         });
@@ -261,10 +292,13 @@ const creatImages = async (req, res) => {
     }
 }
 const removeImage = async (req, res) => {
+    console.log(req.body)
+
     try {
-        const { public_id } = req.body
-        console.log(public_id)
-        await cloudinary.uploader.destroy(public_id,(result) => {
+        const { publicId } = req.body
+        console.log('Received publicId:', publicId); // debug ดูก่อน
+        console.log('Full body:', req.body); // ดูว่ามีอะไรส่งมาบ้าง
+        await cloudinary.uploader.destroy(publicId, (result) => {
             res.send('remove success')
         })
     }

@@ -1,36 +1,40 @@
 import React, { useState, useEffect } from 'react'
 import useEcomeStore from '../../store/Ecome_store'
-import { UpdateProduct ,ReadProduct } from '../../api/product'
+import { UpdateProduct, ReadProduct } from '../../api/product'
 import { toast } from 'react-toastify'
 import { Uploadfile } from './Uploadfile'
-import { useParams,useNavigate } from 'react-router-dom'
-const innitailState = {
-    title: "banana",
-    description: " eat for healthy",
-    price: 35,
-    images: [],
-    quantity: 10,
-    categoryId: ''
-}
+import { useParams, useNavigate } from 'react-router-dom'
+
 const FormEditeProduct = () => {
-    const id = useParams()
-    const [form, setform] = useState(innitailState)
+    const { id } = useParams()
+    const navigate = useNavigate()
+    const [form, setform] = useState({
+        title: '',
+        description: '',
+        price: 0,
+        images: [],
+        quantity: 0,
+        categoryId: ''
+
+    })
     const token = useEcomeStore((state) => state.token)
     const getCategory = useEcomeStore((state) => state.getCategory)
     const categories = useEcomeStore((state) => state.categories)
 
     useEffect(() => {
-        getCategory(token)
-        fetchProduct()
+        getCategory()
+        fetchProduct(token, id,form)
     }, [])
-    const fetchProduct =async(token)=>{
+    const fetchProduct = async (token, id,form) => {
         try {
-            const res = await ReadProduct(token,id,form)
-            console.log(res)
-        }catch(err){
+            const res = await ReadProduct(token, id,form)
+            console.log("res from backend ", res)
+            setform(res.data)
+        } catch (err) {
             console.log(err)
         }
     }
+    // console.log('form frontend ',form)
     const handdleOnchang = (e) => {
         console.log(e.target.name, e.target.value)
         setform({
@@ -40,11 +44,12 @@ const FormEditeProduct = () => {
         )
     }
     const handdleSubmit = async (e) => {
-        e.preventDefault(token,id,form)
+        e.preventDefault()
         try {
-            const res = await UpdateProduct(token,id,form)
-            console.log("res blackend",res)
-            toast.success(`Creat ${res.data.title} Success`)
+            const res = await UpdateProduct(token, id, form)
+            console.log("res blackend", res)
+            toast.success(`Update ${res.data.title} success`)
+            navigate('/admin/product')
         } catch (err) {
             console.log(err)
         }

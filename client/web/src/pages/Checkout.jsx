@@ -1,8 +1,11 @@
 import React from 'react'
+import SummaryCart from '../components/card/SummaryCart'
 
 const Checkout = () => {
   return (
-    <div>Checkout</div>
+    <div>
+      <SummaryCart/>
+    </div>
   )
 }
 

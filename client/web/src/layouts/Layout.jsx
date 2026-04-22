@@ -6,7 +6,7 @@ const Layout = () => {
     return (
         <div>
             <Navbar/>
-            <main>
+            <main className='h-full px-4 mt-2 '>
                 {/* Outlet เอาไว้แสดง element ลูกๆ */}
                 <Outlet />
             </main>

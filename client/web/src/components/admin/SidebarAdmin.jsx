@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard } from 'lucide-react';
+import { LayoutDashboard,ShoppingCart,LogOut, ShoppingBag,ChartNoAxesGantt  } from 'lucide-react';
 
 const SidebarAdmin = () => {
     return (
@@ -26,7 +26,7 @@ const SidebarAdmin = () => {
                             : 'text-gray-300 hover:bg-gray-700 hover:text-white rounded flex items-center px-4 py-2'
                     }
                 >
-                    <LayoutDashboard /> Manage
+                    <ChartNoAxesGantt /> Manage
                 </NavLink>
                 <NavLink
                     to={'/admin/category'}
@@ -36,7 +36,7 @@ const SidebarAdmin = () => {
                             : 'text-gray-300 hover:bg-gray-700 hover:text-white rounded flex items-center px-4 py-2'
                     }
                 >
-                    <LayoutDashboard /> Category
+                    < ShoppingBag /> Category
                 </NavLink>
                 <NavLink
                     to={'/admin/product'}
@@ -46,7 +46,7 @@ const SidebarAdmin = () => {
                             : 'text-gray-300 hover:bg-gray-700 hover:text-white rounded flex items-center px-4 py-2'
                     }
                 >
-                    <LayoutDashboard /> Product
+                    <ShoppingCart /> Product
                 </NavLink>
             </nav>
             <footer>
@@ -57,7 +57,7 @@ const SidebarAdmin = () => {
                             : 'text-gray-300 hover:bg-gray-700 hover:text-white rounded flex items-center px-4 py-2'
                     }
                 >
-                    <LayoutDashboard /> Logout
+                    <LogOut /> Logout
                 </NavLink>
             </footer>
         </div>

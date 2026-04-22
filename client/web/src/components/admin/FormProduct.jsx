@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react'
 import useEcomeStore from '../../store/Ecome_store'
-import { CreatProduct ,ReadProduct,UpdateProduct} from '../../api/product'
+import { CreatProduct, ReadProduct, UpdateProduct, RemoveProduct } from '../../api/product'
 import { toast } from 'react-toastify'
 import { Uploadfile } from './Uploadfile'
 import { Link } from 'react-router-dom'
-const innitailState = {
-    title: "banana",
-    description: " eat for healthy",
-    price: 35,
-    images: [],
-    quantity: 10,
-    categoryId: ''
-}
+import { Pencil,Trash2 } from 'lucide-react';
+const  innitailState = {
+        title: '',
+        description: '',
+        price: 0,
+        images: [],
+        quantity: 0,
+        categoryId: ''
+    }
 const FormProduct = () => {
-    const [form, setform] = useState(innitailState)
+    const [form, setform] = useState({
+        title: '',
+        description: '',
+        price: 0,
+        images: [],
+        quantity: 0,
+        categoryId: ''
+    })
     const token = useEcomeStore((state) => state.token)
     const getCategory = useEcomeStore((state) => state.getCategory)
     const categories = useEcomeStore((state) => state.categories)
@@ -21,8 +29,8 @@ const FormProduct = () => {
     const products = useEcomeStore((state) => state.products)
 
     useEffect(() => {
-        getCategory(token)
-        getProduct(token, 3)
+        getCategory()
+        getProduct()
     }, [])
     const handdleOnchang = (e) => {
         console.log(e.target.name, e.target.value)
@@ -37,11 +45,25 @@ const FormProduct = () => {
         try {
             const res = await CreatProduct(token, form)
             console.log(res)
+            setform(innitailState)
+            getProduct()   
             toast.success(`Creat ${res.data.title} Success`)
         } catch (err) {
             console.log(err)
         }
         // console.log("จากform",products)
+    }
+    const handdleRemove = async (id) => {
+
+        try {
+            const res = await RemoveProduct(token, id)
+            getProduct()
+            console.log(res)
+            toast.success(`Remove ${res.data.title} sucess`)
+        } catch (err) {
+            console.log(err)
+
+        }
     }
     // console.log(products)
     // console.log(categories)
@@ -53,7 +75,7 @@ const FormProduct = () => {
                     className='border px-2 '
                     value={form.title}
                     onChange={handdleOnchang}
-                    placeholder='Title'
+                    placeholder='Product name'
                     name='title' />
                 <input type="text"
                     className='border px-2 '
@@ -88,8 +110,9 @@ const FormProduct = () => {
                 <button className='bg-sky-500 text-white border rounded px-2 py-3 font-bold'>กดเพี่มสีนค้า</button>
                 <table className="min-w-full border border-gray-200">
                     <thead className="bg-gray-100 text-gray-700">
-                        <tr>
+                        <tr className='bg-gray-300'>
                             <th className="border px-4 py-2">NO.</th>
+                            <th className="border px-4 py-2">Image</th>
                             <th className="border px-4 py-2">Name</th>
                             <th className="border px-4 py-2">Description</th>
                             <th className="border px-4 py-2">Price</th>
@@ -103,6 +126,13 @@ const FormProduct = () => {
                         {products.map((item, index) => (
                             <tr key={item.id} className="hover:bg-gray-50">
                                 <td className="border px-4 py-2">{index + 1}</td>
+                                <td className="border px-4 py-2">
+                                    {
+                                        item.images.length > 0
+                                            ? <img src={item.images[0].url} alt="product" className="w-26 h-26 object-cover rounded shadow-m" />
+                                            : <div className='w-26 h-26 items-center justify-center flex bg-stone-400 rounded-md'>No Image</div>
+                                    }
+                                </td>
                                 <td className="border px-4 py-2">{item.title}</td>
                                 <td className="border px-4 py-2">{item.description}</td>
                                 <td className="border px-4 py-2">{item.price}</td>
@@ -111,8 +141,12 @@ const FormProduct = () => {
                                 <td className="border px-4 py-2">{item.updatedAt}</td>
                                 <td className="border px-4 py-2">
                                     <div className='flex gap-2'>
-                                        <Link className='bg-sky-400 px-4 py-2 rounded-md ' to= {'/admin/product/edite/'+item.id}>Edit</Link>
-                                        <Link className='bg-red-400 px-4 py-2 rounded-md ' >Delete</Link>
+                                        <Link className='bg-sky-400 px-4 py-2 rounded-md ' to={'/admin/product/edite/' + item.id}> 
+                                        <Pencil/>
+                                        </Link>
+                                        <button className='bg-red-400 px-4 py-2 rounded-md ' onClick={() => handdleRemove(item.id)} >
+                                            <Trash2/>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

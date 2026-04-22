@@ -3,12 +3,13 @@ import { toast } from 'react-toastify'
 import Resizer from "react-image-file-resizer";
 import { removefile, uploadfile } from '../../api/product';
 import useEcomStor from '../../store/Ecome_store'
-import { X } from 'lucide-react';
+import { X, Loader } from 'lucide-react';
 export const Uploadfile = (props) => {
     const { form, setform } = props
     const token = useEcomStor((state) => state.token)
     const [isloading, setIsloading] = useState(false)
     const handdleOnchang = (e) => {
+        setIsloading(true)
         const files = e.target.files;
         if (files) {
             setIsloading(true);
@@ -33,18 +34,21 @@ export const Uploadfile = (props) => {
                         // enpoint backend
                         uploadfile(token, data).then(
                             (res) => {
-                                console.log(res)
+                                console.log('📦 Response from backend:', res.data)
+                                console.log('🔑 public_id:', res.data.public_id)
                                 Allfiles.push(res.data)
                                 setform({
                                     ...form,
                                     images: Allfiles
                                 })
                                 toast.success('UploadImage success')
+                                setIsloading(false)
                             }
 
                         ).catch(
                             (err) => {
                                 console.log(err)
+                                setIsloading(false)
                             }
                         )
                     },
@@ -54,19 +58,20 @@ export const Uploadfile = (props) => {
         }
         console.log(form)
     }
-    const handleDelete = (public_id) => {
-        const images = form.images;
-        removefile(token, public_id).then(
+    const handleDelete = (publicId) => {
+        let images = form.images;
+        console.log(publicId)
+        removefile(token, publicId).then(
             (res) => {
                 const filterImage = images.filter((item) => {
                     console.log(item)
-                    return item.public_id !== public_id;
+                    return item.publicId !== publicId;
                 })
                 console.log('filterImage', filterImage)
                 toast.error(res.data)
                 setform({
                     ...form,
-                    images:filterImage
+                    images: filterImage
                 }
                 )
             }
@@ -79,10 +84,14 @@ export const Uploadfile = (props) => {
     return (
         <div>
             <div className='flex gap-3 m-5'>
+                {
+                    isloading && <Loader className='animate-spin w-10 h-10' />
+                }
+
                 {form.images.map((item, index) =>
                     <div key={index} className='relative border-2 border-sky-400 shadow'>
                         <img src={item.url} alt="" className='w-24 h-24 bg-cover bg-center hover:scale-105 ' />
-                        <X onClick={() => handleDelete(item.public_id)} className='absolute -top-4 -right-2 text-red-500 bg-gray-200 active:scale-110'></X>
+                        <X onClick={() => handleDelete(item.publicId)} className='absolute -top-4 -right-2 text-red-500 bg-gray-200 active:scale-110'></X>
                     </div>
                 )}
             </div>
