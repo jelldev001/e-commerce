@@ -5,14 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 function Rigester() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [form, setForm] = useState({
     email: '',
     password: '',
     confirmPassword: ''
   })
   const navigate = useNavigate()
-  const handleOnchange = (e) => {
 
+  const handleOnchange = (e) => {
     console.log(e.target.name, e.target.value)
     setForm({
       ...form,
@@ -129,6 +130,7 @@ function Rigester() {
                 </button>
               </div>
             </div>
+
             {/*  confrim password */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 block">
@@ -137,19 +139,19 @@ function Rigester() {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  name="password"
-                  value={form.password}
+                  name="confirmPassword"
+                  value={form.confirmPassword}
                   onChange={handleOnchange}
                   className="w-full pl-11 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  {showPassword ? (
+                  {showConfirmPassword ? (
                     <EyeOff className="w-5 h-5" />
                   ) : (
                     <Eye className="w-5 h-5" />
