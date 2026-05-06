@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import useEcomeStore from '../../store/Ecome_store';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Link } from 'react-router-dom';
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const Navigate = useNavigate()
@@ -60,8 +61,8 @@ function Login() {
             <div className="w-16 h-16 bg-gradient-to-br from-sky-500 to-blue-600 rounded-xl mx-auto flex items-center justify-center shadow-lg">
               <Lock className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-800">ยินดีต้อนรับ</h2>
-            <p className="text-gray-500">กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+            <h2 className="text-3xl font-bold text-gray-800">Wellcome</h2>
+            <p className="text-gray-500">Please log in to continue.</p>
           </div>
 
           {/* Form */}
@@ -69,7 +70,7 @@ function Login() {
             {/* Email Input */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 block">
-                อีเมล
+                Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -87,7 +88,7 @@ function Login() {
             {/* Password Input */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 block">
-                รหัสผ่าน
+                Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -114,7 +115,7 @@ function Login() {
             </div>
 
             {/* Remember & Forgot Password */}
-            <div className="flex items-center justify-between text-sm">
+            {/* <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
@@ -125,14 +126,14 @@ function Login() {
               <a href="#" className="text-sky-600 hover:text-sky-700 font-medium">
                 ลืมรหัสผ่าน?
               </a>
-            </div>
+            </div> */}
 
             {/* Submit Button */}
             <button
               onClick={handleSupmit}
               className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-sky-600 hover:to-blue-700 transform hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg hover:shadow-xl"
             >
-              เข้าสู่ระบบ
+             Login
             </button>
           </div>
 
@@ -142,16 +143,16 @@ function Login() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">หรือ</span>
+              <span className="px-4 bg-white text-gray-500">OR</span>
             </div>
           </div>
 
           {/* Register Link */}
           <div className="text-center text-sm">
-            <span className="text-gray-600">ยังไม่มีบัญชี? </span>
-            <a href="#" className="text-sky-600 hover:text-sky-700 font-semibold">
-              สมัครสมาชิก
-            </a>
+            <span className="text-gray-600">Don't have an account yet? </span>
+            <Link to="/register" className="text-sky-600 hover:text-sky-700 font-semibold">
+              register
+            </Link>
           </div>
         </div>
       </div>

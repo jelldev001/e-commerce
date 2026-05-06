@@ -51,7 +51,7 @@ const CartCard = () => {
                                     className='bg-gray-200 px-2 py-2 rounded-full hover:bg-gray-300 hover:text-red-500 active:bg-gray-300 hover:cursor-pointer' >
                                     <Plus className='h-4 w-4' />
                                 </button>
-                            </div>
+                            </div> 
                             {/* right */}
                             <div className='font-bold text-green-500'>{(item.price * item.count).toLocaleString('th-TH')} </div>
                         </div>

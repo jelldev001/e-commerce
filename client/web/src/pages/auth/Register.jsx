@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 function Rigester() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -77,8 +79,8 @@ function Rigester() {
             <div className="w-16 h-16 bg-gradient-to-br from-sky-500 to-blue-600 rounded-xl mx-auto flex items-center justify-center shadow-lg">
               <Lock className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-3xl font-bold text-gray-800">ยินดีต้อนรับ</h2>
-            <p className="text-gray-500">กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+            <h2 className="text-3xl font-bold text-gray-800">Wellcome</h2>
+            {/* <p className="text-gray-500">Please log in to continue.</p> */}
           </div>
 
           {/* Form */}
@@ -86,7 +88,7 @@ function Rigester() {
             {/* Email Input */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 block">
-                อีเมล
+                Email
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -104,7 +106,7 @@ function Rigester() {
             {/* Password Input */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 block">
-                รหัสผ่าน
+                Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -129,27 +131,29 @@ function Rigester() {
                 </button>
               </div>
             </div>
+
+
             {/*  confrim password */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 block">
-                ยืนยันรหัสผ่าน
+                Confirm password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  name="password"
-                  value={form.password}
+                  name="confirmPassword"
+                  value={form.confirmPassword}
                   onChange={handleOnchange}
                   className="w-full pl-11 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  {showPassword ? (
+                  {showConfirmPassword ? (
                     <EyeOff className="w-5 h-5" />
                   ) : (
                     <Eye className="w-5 h-5" />
@@ -165,19 +169,19 @@ function Rigester() {
               onClick={handleSupmit}
               className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-sky-600 hover:to-blue-700 transform hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg hover:shadow-xl"
             >
-              เข้าสู่ระบบ
+              Register
             </button>
           </div>
 
           {/* Divider */}
-          <div className="relative">
+          {/* <div className="relative">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-4 bg-white text-gray-500">หรือ</span>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
