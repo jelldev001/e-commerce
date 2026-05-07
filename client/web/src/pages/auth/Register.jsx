@@ -13,8 +13,8 @@ function Rigester() {
     confirmPassword: ''
   })
   const navigate = useNavigate()
-  const handleOnchange = (e) => {
 
+  const handleOnchange = (e) => {
     console.log(e.target.name, e.target.value)
     setForm({
       ...form,
