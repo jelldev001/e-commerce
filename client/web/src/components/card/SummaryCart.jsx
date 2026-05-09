@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { listUserCart, saveAddress } from '../../api/user'
 import useEcomstor from '../../store/Ecome_store'
 import { toast } from "react-toastify"
+import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 const SummaryCart = () => {
     const token = useEcomstor((s) => s.token)
     const [products, setProducts] = useState([])
     const [cartTotal, setCartTotal] = useState(0)
     const [address, setAddress] = useState('')
     const [addressSaved, setAddressSaved] = useState(false)
+    const navigate = useNavigate()
     useEffect(() => {
         dhlGetUserCart(token)
     }, [])
@@ -23,8 +26,8 @@ const SummaryCart = () => {
     }
     const hdlSaveAddress = () => {
         console.log(address)
-        if (!address) {
-            return toast.warning("Please fil data address frist")
+        if (!address.trim()) {
+            return toast.warning("Please fill in the address first")
         }
         saveAddress(token, address)
             .then((res) => {
@@ -94,10 +97,14 @@ const SummaryCart = () => {
                                 <p className='font-bold text-green-400'> {cartTotal.toLocaleString('th-TH')}</p>
                             </div>
                         </div>
-                        <div >
-                            <butbton
-                            disabled = {!addressSaved}
-                            className='bg-green-400 items-center w-full p-2 text-2xl text-white rounded-md' >Check in </butbton>
+                        <div>
+
+                            <button
+                                disabled={!addressSaved}
+                                onClick={() => navigate('/user/payment')}
+                                className={` w-full p-2 text-2xl text-white rounded-md ${addressSaved ? "bg-green-400 hover:bg-green-600 hover:cursor-pointer"
+                                    : "bg-gray-300 cursor-not-allowed"
+                                    }`} >Check in </button>
                         </div>
                     </div>
                 </div>

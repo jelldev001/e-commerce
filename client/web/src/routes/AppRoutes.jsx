@@ -18,6 +18,7 @@ import Manage from '../pages/admin/Manage'
 import ProtectRouteUser from './ProtectRouteUser'
 import ProtectRouteAdmin from './ProtecRouteAdmin'
 import EditeProduct from '../pages/admin/EditeProduct'
+import Payment from '../pages/Payment'
 
 const router = createBrowserRouter([
     {
@@ -36,7 +37,8 @@ const router = createBrowserRouter([
     },
     {
         path : '/admin',
-        element : <ProtectRouteAdmin element={<LayoutAdmin/>} />,
+        element : <LayoutAdmin/>,
+        // element : <ProtectRouteAdmin element={<LayoutAdmin/>} />,
         children : [ 
             { index :true ,element : <Dashboard/>},
             {path : '/admin/category',element  : <Category/>},
@@ -48,10 +50,11 @@ const router = createBrowserRouter([
     },
     {
         path : '/user',
-        // element :<LayoutUser/>,
-        element :<ProtectRouteUser element ={<LayoutUser/>}/>, //เป๊นการส่ง pops ไปยัง
+        element :<LayoutUser/>,
+        // element :<ProtectRouteUser element ={<LayoutUser/>}/>, //เป๊นการส่ง pops ไปยัง
         children : [
-            {index :true , element :<HomeUser/>}
+            {index :true , element :<HomeUser/>},
+            {path:'/user/payment' , element :<Payment/>}
         ]
     }, {
         path : '/404',
